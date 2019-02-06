@@ -59,6 +59,11 @@
         }
     },
     "require-dev": {
+        "easycorp/easy-log-handler": "^1.0.7",
+        "symfony/debug-bundle": "*",
+        "symfony/monolog-bundle": "^3.0",
+        "symfony/profiler-pack": "*",
+        "symfony/var-dumper": "*",
         "symfony/web-server-bundle": "4.2.*"
     }
 }
