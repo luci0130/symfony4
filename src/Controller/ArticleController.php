@@ -9,12 +9,14 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Repository\ArticleRepository;
 use App\Service\MarkdownHelper;
 use App\Service\SlackClient;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArticleController extends AbstractController
@@ -33,10 +35,9 @@ class ArticleController extends AbstractController
     /**
      * @Route("/", name="app_homepage")
      */
-    public function homepage(EntityManagerInterface $em)
+    public function homepage(ArticleRepository $articleRepository)
     {
-        $repository = $em->getRepository(Article::class);
-        $articles = $repository->findBy([], ['publishedAt' => 'DESC']);
+        $articles = $articleRepository->findAllPublishedOrderedByNewest();
 
         return $this->render(
             "article/homepage.html.twig",
@@ -49,18 +50,10 @@ class ArticleController extends AbstractController
     /**
      * @Route("/news/{slug}", name="article_show")
      */
-    public function show($slug, SlackClient $slackClient, EntityManagerInterface $em)
+    public function show(Article $article, SlackClient $slackClient, EntityManagerInterface $em)
     {
-        if ($slug == "Luci") {
+        if ($article->getSlug() == "Luci") {
             $slackClient->sendMessage('John Doe', 'This is an amazing message!');
-        }
-
-        $repository = $em->getRepository(Article::class);
-        /** @var Article $article */
-        $article = $repository->findOneBy(['slug' => $slug]);
-
-        if (!$article) {
-            throw $this->createNotFoundException(sprintf('No article for slug "%s"', $slug));
         }
 
         $comments = [

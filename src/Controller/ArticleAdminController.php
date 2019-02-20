@@ -44,7 +44,9 @@ strip steak pork belly aliquip capicola officia. Labore deserunt esse chicken lo
 cow est ribeye adipisicing. Pig hamburger pork belly enim. Do porchetta minim capicola irure pancetta chuck
 fugiat.
 EOF
-            );
+            )->setAuthor('Lucian Turiac')
+            ->setImageFilename('asteroid.jpeg')
+            ->setHeartCount(rand(10,100));
 
         if (rand(1, 10) > 2) {
             $article->setPublishedAt(new \DateTime(sprintf('-%d days', rand(1, 100))));
